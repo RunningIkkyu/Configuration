@@ -1,7 +1,10 @@
 "" General
 
 " Show line numbers
-set number	
+set nu
+
+" Turn off error beeping
+set visualbell
 
 " Break lines at word (requires Wrap lines)
 set linebreak
