@@ -46,7 +46,7 @@ set ignorecase
 set incsearch	
  
 " Auto-indent new lines
-" set autoindent	
+set autoindent	
 
 " Use spaces instead of tabs
 set expandtab	
@@ -55,7 +55,7 @@ set expandtab
 set shiftwidth=4	
 
 " Enable smart-indent
-set smartindent	
+" set smartindent	
 
 " Enable smart-tabs
 set softtabstop=4	" Number of spaces per Tab
