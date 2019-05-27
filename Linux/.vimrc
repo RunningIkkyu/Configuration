@@ -7,10 +7,10 @@ set nu
 set visualbell
 
 " Break lines at word (requires Wrap lines)
-set linebreak
+" set linebreak
 
 " Wrap-broken line prefix
-set showbreak=+++	
+" set showbreak=+++	
 
 " Display 5 lines above/below the cursor when scrolling with a mouse.
 set scrolloff=5
@@ -25,7 +25,7 @@ set matchpairs+=<:>
 set encoding=utf-8
 
 " Line wrap (number of cols)
-set textwidth=100
+" set textwidth=100
 
 " Highlight matching brace
 set showmatch	
@@ -37,7 +37,7 @@ set showmatch
 set hlsearch	
 
 " Enable smart-case search
-set smartcase	
+" set smartcase	
 
 " Always case-insensitive
 set ignorecase	
@@ -46,7 +46,7 @@ set ignorecase
 set incsearch	
  
 " Auto-indent new lines
-set autoindent	
+" set autoindent	
 
 " Use spaces instead of tabs
 set expandtab	
