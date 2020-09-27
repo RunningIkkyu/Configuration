@@ -13,3 +13,23 @@ $ docker login --username=xxx registry.cn-shenzhen.aliyuncs.com
 ```
 $ docker pull registry.cn-shenzhen.aliyuncs.com/ikkyu/vim-ubuntu:latest
 ```
+
+## 3. Run docker and mount current dir.
+
+
+```
+$ docker run -it -v $(pwd):/root/code vim-ubuntu:latest fish
+```
+
+or 
+
+```
+cp dockervim /usr/bin/
+```
+
+and run :
+
+```
+dockervim
+```
+
