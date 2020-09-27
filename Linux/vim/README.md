@@ -30,6 +30,6 @@ cp dockervim /usr/bin/
 and run :
 
 ```
-dockervim
+vimdocker
 ```
 
