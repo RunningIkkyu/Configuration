@@ -40,6 +40,7 @@ RUN vim +GoInstallBinaries +qal
 
 RUN mkdir -p /home/code 
 
+RUN mkdir -p ~/.config/fish
 RUN cd ~/.config/fish/ && touch config.fish
 RUN echo "cd ~" >> ~/.config/fish/config.fish
 RUN echo "export EDITOR=vim" >> ~/.config/fish/config.fish
