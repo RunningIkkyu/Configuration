@@ -10,7 +10,8 @@ RUN apt update \
         exuberant-ctags \
         curl \
         wget \
-        git 
+        git \
+        fish
 
 #RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.1/zsh-in-docker.sh)"
 
@@ -37,4 +38,9 @@ RUN go env -w GOPROXY=https://goproxy.io,direct
 # Install go binaries
 RUN vim +GoInstallBinaries +qal
 
-RUN mkdir -p /home/code && cd /home/code
+RUN mkdir -p /home/code 
+
+RUN echo "cd ~" >> ~/.config/fish/config.fish
+RUN echo "export EDITOR=vim" >> ~/.config/fish/config.fish
+
+
