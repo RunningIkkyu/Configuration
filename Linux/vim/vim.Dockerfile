@@ -19,9 +19,13 @@ RUN mkdir -p ~/.local/share/nvim/site/autoload/
 RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://gitee.com/c4pr1c3/vim-plug/raw/master/plug.vim
 
-# Download vim configuration file.
+# Download vim configuration file from gitee.
+#RUN curl -fLo ~/.config/nvim/init.vim --create-dirs \
+    #https://gitee.com/RunningIkkyu/configuration/raw/master/vim/init.vim
+
+# Download vim configuration file from github.
 RUN curl -fLo ~/.config/nvim/init.vim --create-dirs \
-    https://gitee.com/RunningIkkyu/configuration/raw/master/vim/init.vim
+    https://raw.githubusercontent.com/RunningIkkyu/Configuration/master/Linux/vim/init.vim
     
 # Install Plulgins.
 RUN vim +PlugInstall +qall
@@ -33,4 +37,4 @@ RUN go env -w GOPROXY=https://goproxy.io,direct
 # Install go binaries
 RUN vim +GoInstallBinaries +qal
 
-RUN cd ~ && mkdir code && cd code
+RUN mkdir -p /home/code && cd /home/code
