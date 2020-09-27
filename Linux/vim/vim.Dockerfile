@@ -25,5 +25,6 @@ RUN apt update \
     && mkdir -p ~/.config/fish \
     && cd ~/.config/fish/ && touch config.fish \ 
     && echo "cd ~" >> ~/.config/fish/config.fish \ 
-    && echo "export EDITOR=vim" >> ~/.config/fish/config.fish
-
+    && echo "export EDITOR=vim" >> ~/.config/fish/config.fish \
+    && mkdir /root/workdir
+    && echo "cd /root/workdir" >> ~/.config/fish/config.fish 
