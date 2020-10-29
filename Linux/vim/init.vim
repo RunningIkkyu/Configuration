@@ -12,6 +12,7 @@ Plug 'ryanoasis/vim-devicons'
 
 "Plug 'airblade/vim-gitgutter'
 "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'tpope/vim-fugitive'
 
 " Plugin offers tree view of files.
 Plug 'preservim/nerdtree'
@@ -31,6 +32,13 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " colorscheme
 Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
+Plug 'glepnir/oceanic-material'
+Plug 'arcticicestudio/nord-vim'
+Plug 'mhartington/oceanic-next'
+
+Plug 'sheerun/vim-polyglot'
+"Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
 
 " Quick comment
@@ -92,9 +100,20 @@ au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" config for multiple selection
+" config for multiple cursors
 "
 "
+"let g:multi_cursor_use_default_mapping=0
+
+" Default mapping
+"let g:multi_cursor_start_word_key      = '<C-m>'
+"let g:multi_cursor_select_all_word_key = '<A-m>'
+"let g:multi_cursor_start_key           = 'g<C-m>'
+"let g:multi_cursor_select_all_key      = 'g<A-m>'
+"let g:multi_cursor_next_key            = '<C-n>'
+"let g:multi_cursor_prev_key            = '<C-p>'
+"let g:multi_cursor_skip_key            = '<C-x>'
+"let g:multi_cursor_quit_key            = '<Esc>'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " qucik cscope
@@ -314,8 +333,23 @@ nmap <leader>f  <Plug>(coc-format-selected)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vim Basic settings.
 colorscheme gruvbox
+"colorscheme gruvbox-material
+"colorscheme oceanic_material
+"colorscheme nord
+
+" >>>>>>>>>>> Ocean next <<<<<<<<<<<
+"colorscheme OceanicNext
+"let g:airline_theme='oceanicnext'
+"let g:oceanic_next_terminal_bold = 1
+"let g:oceanic_next_terminal_italic = 1
+" >>>>>>>>>>> Ocean next end<<<<<<<<<<<
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Vim Basic settings.
+syntax enable
+set termguicolors
 set clipboard+=unnamedplus
 set updatetime=300
 set signcolumn=yes
@@ -332,3 +366,14 @@ filetype plugin on
 set shortmess+=c
 " always show signcolumns
 set signcolumn=yes
+" Map b previous, b next, b delete.
+nmap gn :bn<cr>
+nmap gp :bp<cr>
+nmap gw :bw<cr>
+" Rename variable
+" TODO: improve regex, only match the word not characters.
+map <F2> <Esc>:%s/<c-r><c-w>/<c-r><c-w>/g<Left><Left>
+" map ctrl-p to Fuzzy finder
+map <C-p> <Esc>:FZF<CR>
+
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
