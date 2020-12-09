@@ -1,14 +1,15 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Install plugins.
 " Specify a directory for plugins
-call plug#begin('~/.vim/plugged')
-
+call plug#begin('~/.vim/plugged') 
 " Code completion.
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Adds file type icons to Vim plugins.
 " Get a Nerd Font! or patch your own. Without this, things break
 Plug 'ryanoasis/vim-devicons'
+
+"" calc fibonacci sequences
+Plug 'Olical/neofib', { 'do': 'bash install.sh' }
 
 "Plug 'airblade/vim-gitgutter'
 "Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
@@ -19,9 +20,23 @@ Plug 'preservim/nerdtree'
 " Make NERDTree tabs more comfortable.
 Plug 'jistr/vim-nerdtree-tabs'
 
+" vim goimports
+Plug 'mattn/vim-goimports'
+
+""Language Client
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
 
 " Fuzzy finder.
 "Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" https://github.com/dense-analysis/ale
+"Plug 'dense-analysis/ale'
 
 " Beautify vim statsline.
 Plug 'vim-airline/vim-airline'
@@ -57,7 +72,14 @@ Plug 'luochen1990/rainbow'
 Plug 'yuttie/comfortable-motion.vim'
 
 " vim-go
-Plug 'fatih/vim-go' ", { 'do': ':GoUpdateBinaries' }
+"Plug 'fatih/vim-go' ", { 'do': ':GoUpdateBinaries' }
+
+" vim-lsc  language server client
+"Plug 'natebosch/vim-lsc'
+
+" vim-lsp language server protocl
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'mattn/vim-lsp-settings'
 
 " Tagbar
 Plug 'majutsushi/tagbar'
@@ -66,11 +88,21 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
 
 " Vim fzf, need install fzf first.
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"Plug 'junegunn/fzf.vim'
 
 Plug 'Yggdroot/indentLine'
 
+" Vim boxdraw, draw ascii graph
+Plug 'gyim/vim-boxdraw'
+
+
+""""""""""""""""""""""""Snipet plugin: ultisnips""""""""""""""""""""""""
+" Track the engine.
+Plug 'SirVer/ultisnips'
+
+" Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets'
 
 " quick cscope
 "Plug 'ronakg/quickr-cscope.vim'
@@ -81,22 +113,67 @@ Plug 'Yggdroot/indentLine'
 " Multiple selection
 "Plug 'terryma/vim-multiple-cursors'
 
+
+
 call plug#end()
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" ale config 
+let g:ale_linters = {
+	\ 'go': ['gopls'],
+	\}
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Launch gopls when Go files are in use LanguageClient
+let g:LanguageClient_serverCommands = {
+    \ 'go': ['gopls'],
+    \ 'c': ['clangd'],
+    \ 'cpp': ['clangd'],
+    \ }
+
+"let g:LanguageClient_loadSettings = 1 " Use an absolute configuration path if you want system-wide settings
+"let g:LanguageClient_settingsPath = '/home/YOUR_USERNAME/.config/nvim/settings.json'
+" https://github.com/autozimu/LanguageClient-neovim/issues/379 LSP snippet is not supported
+"let g:LanguageClient_hasSnippetSupport = 0
+" Run gofmt on save
+
+autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
+
+function LC_maps()
+  if has_key(g:LanguageClient_serverCommands, &filetype)
+    nmap <buffer> <silent> K <Plug>(lcn-hover)
+    nmap <buffer> <silent> gd <Plug>(lcn-definition)
+    nmap <buffer> <silent> gr <Plug>(lcn-references)
+    nmap <buffer> <silent> ga <Plug>(lcn-code-action)
+    nmap <buffer> <silent> <leader>e :call LanguageClient#explainErrorAtPoint()<CR>
+    nmap <buffer> <silent> gen <Plug>(lcn-diagnostics-next)
+    nmap <buffer> <silent> geN <Plug>(lcn-diagnostics-prev)
+    nmap <buffer> <silent> <F2> <Plug>(lcn-rename)
+
+  endif
+  "autocmd BufWritePost *.go call LanguageClient_textDocument_formatting_sync()
+endfunction
+
+autocmd FileType * call LC_maps()
+
+let g:LanguageClient_preferredMarkupKind = ['plaintext']
+let g:LanguageClient_hoverPreview = "Always"
+let g:LanguageClient_useVirtualText = "No"
+let g:LanguageClient_hideVirtualTextsOnInsert = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-go
 "let g:go_imports_autosave = 1
-let g:go_doc_popup_window = 1
-let g:go_implements_mode = 'gopls'
-autocmd FileType go nnoremap <buffer> <silent> gr :GoReferrers<CR>
+"let g:go_doc_popup_window = 1
+"let g:go_implements_mode = 'gopls'
+"autocmd FileType go nnoremap <buffer> <silent> gr :GoReferrers<CR>
 
-let g:go_term_enabled = 1
-let g:go_term_mode = 'split'
-au FileType go nmap <Leader>ds <Plug>(go-def-split)
-au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+"let g:go_term_enabled = 1
+"let g:go_term_mode = 'split'
+"au FileType go nmap <Leader>ds <Plug>(go-def-split)
+"au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+"au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -114,11 +191,34 @@ au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 "let g:multi_cursor_prev_key            = '<C-p>'
 "let g:multi_cursor_skip_key            = '<C-x>'
 "let g:multi_cursor_quit_key            = '<Esc>'
+"
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" Langauge server Protocla Plugin: vim-lsp
+"let g:lsp_signs_enabled = 1         " enable signs
+"let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Code snippets.
+" Trigger configuration. You need to change this to something other than <tab> if you use one of the following:
+" - https://github.com/Valloric/YouCompleteMe
+" - https://github.com/nvim-lua/completion-nvim
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+let b:UltiSnipsSnippetDirectories=["/.vim/mysnippets", "/home/ikkyu/.vim/mysnippets"]
+let g:UltiSnipsSnippetDirectories=["UltiSnips", "mysnippets"]
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " qucik cscope
-let g:quickr_cscope_keymaps = 0
-nmap <C-s>c <plug>(quickr_cscope_callers)
+"let g:quickr_cscope_keymaps = 0
+"nmap <C-s>c <plug>(quickr_cscope_callers)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -239,11 +339,11 @@ let NERDTreeIgnore = ['\.pyc$', '\.swp$', '__pycache__$']
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Status line, use `:help coc-status` to see more info.
-let g:airline#extensions#tabline#enabled = 1
-let airline#extensions#coc#error_symbol = ''
-let airline#extensions#coc#warning_symbol = '  '
-let g:airline_theme='badwolf'  "可以自定义主题，这里使用 badwolf
-" let g:lightline = {
+"let g:airline#extensions#tabline#enabled = 1
+"let airline#extensions#coc#error_symbol = ''
+"let airline#extensions#coc#warning_symbol = '  '
+"let g:airline_theme='badwolf'  "可以自定义主题，这里使用 badwolf
+"" let g:lightline = {
 " \ 'colorscheme': 'badwolf',
 " \ 'active': {
 " \   'left': [ [ 'mode', 'paste' ],
@@ -282,43 +382,43 @@ let g:tagbar_autopreview=0
 " coc.vim settings.
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"inoremap <silent><expr> <TAB>
+      "\ pumvisible() ? "\<C-n>" :
+      "\ <SID>check_back_space() ? "\<TAB>" :
+      "\ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+"function! s:check_back_space() abort
+  "let col = col('.') - 1
+  "return !col || getline('.')[col - 1]  =~# '\s'
+"endfunction
 
 
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+"" GoTo code navigation.
+"nmap <silent> gd <Plug>(coc-definition)
+"nmap <silent> gy <Plug>(coc-type-definition)
+"nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gr <Plug>(coc-references)
  
 
-" Remap for symbol renaming.
-nmap <F2> <Plug>(coc-rename)
+ "Remap for symbol renaming.
+"nmap <F2> <Plug>(coc-rename)
 
 
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+ "Use `[g` and `]g` to navigate diagnostics
+"nmap <silent> [g <Plug>(coc-diagnostic-prev)
+"nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+ "Use K to show documentation in preview window.
+"nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+"function! s:show_documentation()
+  "if (index(['vim','help'], &filetype) >= 0)
+    "execute 'h '.expand('<cword>')
+  "else
+    "call CocAction('doHover')
+  "endif
+"endfunction
 
 
 " Highlight the symbol and its references when holding the cursor.
@@ -328,8 +428,8 @@ endfunction
 " Formatting selected code.
 " Need install autopep8 first time running.
 " Needless for me.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+"xmap <leader>f  <Plug>(coc-format-selected)
+"nmap <leader>f  <Plug>(coc-format-selected)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -375,5 +475,13 @@ nmap gw :bw<cr>
 map <F2> <Esc>:%s/<c-r><c-w>/<c-r><c-w>/g<Left><Left>
 " map ctrl-p to Fuzzy finder
 map <C-p> <Esc>:FZF<CR>
+nnoremap <C-M-p> <Esc>:Rg<CR>
+map <C-s> :Snippets<cr>
 
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
+" Quick add quota to a word.
+nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
